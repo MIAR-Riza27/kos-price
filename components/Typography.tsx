@@ -1,4 +1,5 @@
 import React from "react";
+import type { JSX } from "react";
 
 interface TypographyProps {
   children: React.ReactNode;
@@ -8,6 +9,8 @@ interface TypographyProps {
   size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | '7xl';
   weight?: 'normal' | 'medium' | 'semibold' | 'bold';
   align?: 'left' | 'center' | 'right';
+  spacing?: 'tight' | 'normal' | 'relaxed' | 'loose' | 'none';
+  marginBottom?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | '7xl';
 }
 
 export default function Typography({ 
@@ -17,7 +20,10 @@ export default function Typography({
   texture = 'default',
   size,
   weight,
-  align = 'left'
+  align = 'left',
+  spacing,
+  marginBottom,
+  ...props
 }: TypographyProps) {
   
   const textureStyles = {
@@ -58,31 +64,105 @@ export default function Typography({
     right: "text-right"
   };
 
-  // Default sizes and weights for variants
-  const variantDefaults = {
-    h1: { size: '7xl' as const, weight: 'bold' as const },
-    h2: { size: '4xl' as const, weight: 'bold' as const },
-    h3: { size: 'xl' as const, weight: 'bold' as const },
-    h4: { size: 'lg' as const, weight: 'bold' as const },
-    h5: { size: 'base' as const, weight: 'semibold' as const },
-    h6: { size: 'sm' as const, weight: 'semibold' as const },
-    p: { size: 'base' as const, weight: 'normal' as const },
-    span: { size: 'base' as const, weight: 'normal' as const },
-    small: { size: 'sm' as const, weight: 'normal' as const }
+  const spacingStyles = {
+    tight: "leading-tight",
+    normal: "leading-normal",
+    relaxed: "leading-relaxed",
+    loose: "leading-loose",
+    none: "leading-none"
   };
 
-  const finalSize = size || variantDefaults[variant].size;
-  const finalWeight = weight || variantDefaults[variant].weight;
+  // Semantic margin bottom styles for better content flow - Added missing values
+  const marginBottomStyles = {
+    none: "",
+    xs: "mb-1",
+    sm: "mb-2",
+    md: "mb-4",
+    lg: "mb-6",
+    xl: "mb-8",
+    '2xl': "mb-12",
+    '3xl': "mb-16",
+    '4xl': "mb-20",
+    '5xl': "mb-24",
+    '6xl': "mb-32",
+    '7xl': "mb-40"
+  };
 
-  const classes = `
-    ${textureStyles[texture]} 
-    ${sizeStyles[finalSize]} 
-    ${weightStyles[finalWeight]} 
-    ${alignStyles[align]} 
-    ${className}
-  `.trim();
+  // Default configurations for each variant with semantic spacing
+  const variantDefaults = {
+    h1: {
+      size: size || '5xl',
+      weight: weight || 'bold',
+      spacing: spacing || 'tight',
+      marginBottom: marginBottom || 'xl' // Large margin after main titles
+    },
+    h2: {
+      size: size || '4xl',
+      weight: weight || 'bold',
+      spacing: spacing || 'tight',
+      marginBottom: marginBottom || 'lg' // Section headers need substantial spacing
+    },
+    h3: {
+      size: size || '3xl',
+      weight: weight || 'semibold',
+      spacing: spacing || 'normal',
+      marginBottom: marginBottom || 'md' // Subsection headers
+    },
+    h4: {
+      size: size || '2xl',
+      weight: weight || 'semibold',
+      spacing: spacing || 'normal',
+      marginBottom: marginBottom || 'md'
+    },
+    h5: {
+      size: size || 'xl',
+      weight: weight || 'medium',
+      spacing: spacing || 'normal',
+      marginBottom: marginBottom || 'sm' // Smaller headers, less spacing
+    },
+    h6: {
+      size: size || 'lg',
+      weight: weight || 'medium',
+      spacing: spacing || 'normal',
+      marginBottom: marginBottom || 'sm'
+    },
+    p: {
+      size: size || 'base',
+      weight: weight || 'normal',
+      spacing: spacing || 'relaxed',
+      marginBottom: marginBottom || '2xl' // Large margin after paragraphs for component separation
+    },
+    span: {
+      size: size || 'base',
+      weight: weight || 'normal',
+      spacing: spacing || 'normal',
+      marginBottom: marginBottom || 'none' // Inline elements don't need margin
+    },
+    small: {
+      size: size || 'sm',
+      weight: weight || 'normal',
+      spacing: spacing || 'normal',
+      marginBottom: marginBottom || 'xs' // Minimal spacing for small text
+    }
+  };
 
-  const Component = variant;
+  const defaults = variantDefaults[variant];
+  
+  const classes = [
+    textureStyles[texture],
+    sizeStyles[defaults.size as keyof typeof sizeStyles],
+    weightStyles[defaults.weight as keyof typeof weightStyles],
+    alignStyles[align],
+    spacingStyles[defaults.spacing as keyof typeof spacingStyles],
+    marginBottomStyles[defaults.marginBottom as keyof typeof marginBottomStyles],
+    className
+  ].filter(Boolean).join(' ');
 
-  return React.createElement(Component, { className: classes }, children);
+  const Component = variant as keyof JSX.IntrinsicElements;
+
+  return (
+    <Component className={classes} {...props}>
+      {children}
+    </Component>
+  );
 }

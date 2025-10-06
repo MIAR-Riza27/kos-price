@@ -66,7 +66,7 @@ export default function FeatureScroller() {
 			{/* Scrolling container with proper spacing */}
 			<div
 				ref={scrollerRef}
-				className="flex gap-8 animate-scroll-faster"
+				className="flex gap-4 animate-scroll-faster"
 				style={{
 					width: "max-content",
 					willChange: "transform",
@@ -116,7 +116,7 @@ export default function FeatureScroller() {
 			<div className="absolute top-0 left-0 w-12 sm:w-20 h-full bg-gradient-to-r from-[var(--background-light-alt)] via-[var(--background-light-alt)]/90 to-transparent pointer-events-none z-10"></div>
 			<div className="absolute top-0 right-0 w-12 sm:w-20 h-full bg-gradient-to-l from-[var(--background-light-alt)] via-[var(--background-light-alt)]/90 to-transparent pointer-events-none z-10"></div>
 
-			{/* Mobile touch indicator */}
+			{/*touch indicator */}
 			<div className="block sm:hidden absolute bottom-2 left-1/2 transform -translate-x-1/2 pointer-events-none"></div>
 				<div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--color-primary-600)]/20 backdrop-blur-sm border border-[var(--color-primary-600)]/30">
 					<span className="w-1.5 h-1.5 bg-[var(--color-primary)] rounded-full animate-pulse"></span>
@@ -125,6 +125,7 @@ export default function FeatureScroller() {
 						texture="primary"
 						size="xs"
 						weight="medium"
+						marginBottom="none"
 					>
 						Hover pada card untuk pause animasi
 					</Typography>
